@@ -88,3 +88,11 @@ class Client:
                 if mess['status'] == S.REQUEST:
                     self.is_chatting = True
                     self.sendMessage(self.login, S.RESPONSE, None, address[1], address[0])
+                    for mes in self.list_client:
+                        if mes.port == address[1] and mes.ip == address[0]:
+                            for letter in mes.message_with_person:
+                                message = Message(letter.login, letter.mess, S.HISTORY)
+                                self.UDP.send(message, address[0], address[1])
+                if mess['status'] == S.HISTORY:
+                    mes = Message(mess['login'], mess['mess'], S.MESSAGE)
+                    self.list_client[self.actual_person_id].insert_mess(mes)
